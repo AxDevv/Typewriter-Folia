@@ -2,3 +2,4 @@
 /extensions/_DocsExtension/**/*.kt text eol=lf
 * text=auto
 *.md linguist-detectable
+*.mdx linguist-detectable
