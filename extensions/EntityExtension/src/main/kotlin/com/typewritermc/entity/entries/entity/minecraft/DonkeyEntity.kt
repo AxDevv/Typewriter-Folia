@@ -54,6 +54,10 @@ private class DonkeyEntity(player: Player) : WrapperFakeEntity(
     player,
 ) {
     override fun applyProperty(property: EntityProperty) {
+        when (property) {
+            is AgeableProperty -> applyAgeableData(entity, property)
+            else -> {}
+        }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
     }
