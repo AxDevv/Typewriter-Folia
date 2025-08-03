@@ -152,3 +152,22 @@ fun Player.playSound(sound: Sound, context: InteractionContext?)
 fun Player.stopSound(sound: Sound)
 // highlight-green-end
 ```
+
+### Interaction `teardown` changes
+
+The `Interaction.teardown` method removed the `force` parameter. This is no longer needed and was ambiguous.
+
+```kotlin showLineNumbers
+// highlight-red
+override suspend fun teardown(force: Boolean) {
+// highlight-green
+override suspend fun teardown() {
+```
+
+```kotlin showLineNumbers
+// highlight-red
+interaction.teardown(force = true)
+// highlight-green
+interaction.teardown()
+```
+
