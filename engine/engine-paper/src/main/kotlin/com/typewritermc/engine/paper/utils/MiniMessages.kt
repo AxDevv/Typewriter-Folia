@@ -35,6 +35,8 @@ private val mm = MiniMessage.builder()
                 StandardTags.selector(),
                 StandardTags.score(),
                 StandardTags.nbt(),
+                StandardTags.pride(),
+                StandardTags.shadowColor(),
             )
             .tag("confirmation_key") { _, _ -> Tag.preProcessParsed(confirmationKey.keybind) }
             .resolver(Placeholder.parsed("line", "<#ECFFF8><bold>│</bold></#ECFFF8><white>"))
@@ -47,6 +49,20 @@ fun Component.asMini() = mm.serialize(this)
 fun String.asMini() = mm.deserialize(this)
 
 fun String.asMiniWithResolvers(vararg resolvers: TagResolver) = mm.deserialize(this, *resolvers)
+
+fun String.replaceTagPlaceholders(placeholder: String, value: String): String =
+    this.replaceTagPlaceholders(mapOf(placeholder to value))
+
+fun String.replaceTagPlaceholders(vararg placeholders: Pair<String, String>): String =
+    replaceTagPlaceholders(placeholders.toMap())
+
+fun String.replaceTagPlaceholders(placeholders: Map<String, String>): String {
+    if (placeholders.isEmpty()) return this
+
+    return placeholders.entries.fold(this) { acc, (placeholder, value) ->
+        acc.replace("<$placeholder>", value)
+    }
+}
 
 fun CommandSender.sendMini(message: String) = sendMessage(message.asMini())
 
