@@ -133,7 +133,7 @@ class LockInteractionBound(
                 }
 
                 if (!packet.isJump && !packet.isShift) return@PLAYER_INPUT
-                DialogueTrigger.NEXT_OR_COMPLETE.triggerFor(player, player.interactionContext ?: context())
+                DialogueTrigger.NEXT_OR_SKIP_ANIMATION.triggerFor(player, player.interactionContext ?: context())
             }
             // We want to fake the player's location on the client because otherwise they will interact with
             // themselves crash kicking themselves off the server.
