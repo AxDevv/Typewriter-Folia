@@ -49,6 +49,7 @@ private class PandaEntity(player: Player) : WrapperFakeEntity(EntityTypes.PANDA,
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is PandaGeneProperty -> applyPandaGeneData(entity, property)
+            is PandaPoseProperty -> applyPandaPoseData(entity, property)
             is AgeableProperty -> applyAgeableData(entity, property)
         }
         if (applyGenericEntityData(entity, property)) return
