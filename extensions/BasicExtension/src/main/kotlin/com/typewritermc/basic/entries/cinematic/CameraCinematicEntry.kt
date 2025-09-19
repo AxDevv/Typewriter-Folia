@@ -179,6 +179,12 @@ class CameraCinematicAction(
     }
 
     private suspend fun Player.setup() {
+        // Because we are teleporting the player away,
+        // we don't want to quit the temporal interaction because we went out of bounds.
+        if (boundStateSubscription == null) {
+            boundStateSubscription = overrideBoundState(InteractionBoundState.IGNORING, priority = Int.MAX_VALUE)
+        }
+
         if (originalState == null) {
             originalState = state(
                 LOCATION,
@@ -252,9 +258,6 @@ class CameraCinematicAction(
             }
 
         }
-        // Because we are teleporting the player away,
-        // we don't want to quit the temporal interaction because we went out of bounds.
-        boundStateSubscription = overrideBoundState(InteractionBoundState.IGNORING, priority = Int.MAX_VALUE)
     }
 
     private suspend fun Player.teardown() {
