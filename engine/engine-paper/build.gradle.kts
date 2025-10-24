@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnlyApi("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 
     api(project(":engine-core"))
     api(project(":engine-loader"))
