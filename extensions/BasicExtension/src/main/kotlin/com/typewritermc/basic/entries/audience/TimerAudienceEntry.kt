@@ -14,7 +14,8 @@ import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
@@ -58,7 +59,7 @@ class TimerAudienceDisplay(
             logger.warning("Timer duration must be positive, otherwise it will infinitely trigger.")
             return
         }
-        jobs[player.uniqueId] = Dispatchers.UntickedAsync.launch {
+        jobs[player.uniqueId] = KotlinDispatchers.UntickedAsync.launch {
             while (player in this@TimerAudienceDisplay) {
                 delay(duration.toMillis())
                 onTimer.triggerFor(player, context())

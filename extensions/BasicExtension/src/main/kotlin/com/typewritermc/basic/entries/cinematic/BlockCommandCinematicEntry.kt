@@ -16,8 +16,8 @@ import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
-import com.typewritermc.engine.paper.utils.Sync
-import kotlinx.coroutines.Dispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.bukkit.entity.Player
 
 @Entry("block_command_cinematic", "Block commands during the cinematic", Colors.RED, "mdi:console")
@@ -85,7 +85,7 @@ class BlockCommandCinematicAction(
         bundle?.cancel()
         bundle = null
         if (ranCommands.isNotEmpty()) {
-            Dispatchers.Sync.switchContext {
+            Sync.switchContext {
                 ranCommands.forEach {
                     player.performCommand(it)
                 }

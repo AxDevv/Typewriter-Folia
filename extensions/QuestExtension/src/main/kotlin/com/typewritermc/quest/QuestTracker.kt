@@ -14,7 +14,8 @@ import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import com.typewritermc.quest.entries.QuestEntry
 import com.typewritermc.quest.events.AsyncQuestStatusUpdate
 import com.typewritermc.quest.events.AsyncTrackedQuestUpdate
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
 import java.util.concurrent.ConcurrentHashMap
@@ -74,7 +75,7 @@ class QuestTracker(
         }
 
         if (oldStatus == null) return
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             AsyncQuestStatusUpdate(player, ref, oldStatus, status).callEvent()
 
             if (trackedQuest == ref && status != QuestStatus.ACTIVE) {
@@ -94,7 +95,7 @@ class QuestTracker(
     fun trackQuest(quest: Ref<QuestEntry>) {
         val from = trackedQuest
         trackedQuest = quest
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             AsyncTrackedQuestUpdate(player, from, quest).callEvent()
         }
     }
@@ -102,7 +103,7 @@ class QuestTracker(
     fun unTrackQuest() {
         val from = trackedQuest
         trackedQuest = null
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             AsyncTrackedQuestUpdate(player, from, null).callEvent()
         }
     }

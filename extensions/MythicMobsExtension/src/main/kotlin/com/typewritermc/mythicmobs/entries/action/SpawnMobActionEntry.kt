@@ -16,12 +16,12 @@ import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import io.lumine.mythic.api.mobs.entities.SpawnReason
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 
 
 @Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, "fa6-solid:dragon")
@@ -49,7 +49,7 @@ class SpawnMobActionEntry(
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player, context).parsePlaceholders(player))
         if (!mob.isPresent) return
 
-        Dispatchers.Sync.launch {
+        Sync.launch {
             mob.get().spawn(
                 BukkitAdapter.adapt(spawnLocation.get(player, context).toBukkitLocation()),
                 level.get(player, context),

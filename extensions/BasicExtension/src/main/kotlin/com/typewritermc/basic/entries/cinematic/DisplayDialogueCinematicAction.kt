@@ -11,10 +11,10 @@ import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.EXP
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.LEVEL
 import com.typewritermc.engine.paper.utils.PlayerState
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.engine.paper.utils.restore
 import com.typewritermc.engine.paper.utils.state
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.bukkit.entity.Player
 
 data class SingleLineDisplayDialogueSegment(
@@ -106,7 +106,7 @@ class DisplayDialogueCinematicAction(
         super.teardown()
         teardown?.invoke(player)
         reset?.invoke(player)
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             player.restore(state)
         }
     }

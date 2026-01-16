@@ -29,7 +29,8 @@ import com.typewritermc.engine.paper.interaction.*
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.future.await
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
 import me.tofaa.entitylib.meta.mobs.villager.VillagerMeta
@@ -112,7 +113,7 @@ class LockInteractionBound(
             player.fakeClearInventory()
         }
 
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             server.onlinePlayers.forEach {
                 it.hidePlayer(plugin, player)
                 player.hidePlayer(plugin, it)
@@ -179,7 +180,7 @@ class LockInteractionBound(
         if (!player.isFloodgate) {
             player.restoreInventory()
         }
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             player.restore(playerState)
             playerState = null
         }

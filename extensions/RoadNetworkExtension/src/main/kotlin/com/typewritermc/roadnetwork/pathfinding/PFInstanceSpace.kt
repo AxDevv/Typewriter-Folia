@@ -12,7 +12,8 @@ import com.typewritermc.engine.paper.utils.server
 import com.typewritermc.engine.paper.utils.toBukkitWorld
 import com.typewritermc.engine.paper.utils.toWorld
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.unregister
@@ -94,7 +95,7 @@ class InstanceSpaceCache : Initializable, Listener {
     }
 
     override suspend fun initialize() {
-        job = Dispatchers.UntickedAsync.launch {
+        job = KotlinDispatchers.UntickedAsync.launch {
             while (true) {
                 delay(5000)
                 cache.values.retainAll { it.refresh() }

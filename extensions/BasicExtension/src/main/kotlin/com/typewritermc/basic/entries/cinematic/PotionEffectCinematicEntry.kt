@@ -11,7 +11,8 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.interaction.interactionContext
 import com.typewritermc.engine.paper.utils.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -72,7 +73,7 @@ class PotionEffectCinematicAction(
         val potionEffectType = segment.potionEffectType.get(player, context)
         state = player.state(EffectStateProvider(potionEffectType))
 
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             player.addPotionEffect(
                 PotionEffect(
                     potionEffectType,
@@ -94,7 +95,7 @@ class PotionEffectCinematicAction(
     private suspend fun restoreState() {
         val state = state ?: return
         this.state = null
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             player.restore(state)
         }
     }

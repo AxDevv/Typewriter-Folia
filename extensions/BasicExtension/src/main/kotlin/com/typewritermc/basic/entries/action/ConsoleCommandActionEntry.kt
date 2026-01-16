@@ -15,9 +15,9 @@ import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.engine.paper.utils.server
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.bukkit.Bukkit
 
 @Entry("console_run_command", "Run command from console", Colors.RED, "mingcute:terminal-fill")
@@ -43,7 +43,7 @@ class ConsoleCommandActionEntry(
         val command = command.get(player, context)
         // Run in the main thread
         if (command.isBlank()) return
-        Dispatchers.Sync.launch {
+        Sync.launch {
             val commands = command.parsePlaceholders(player).lines()
             for (cmd in commands) {
                 server.dispatchCommand(Bukkit.getConsoleSender(), cmd)

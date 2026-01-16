@@ -13,7 +13,8 @@ import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.engine.paper.utils.msg
 import com.typewritermc.roadnetwork.content.RoadNetworkContentMode
 import com.typewritermc.roadnetwork.pathfinding.InstanceSpaceCache
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import org.koin.java.KoinJavaComponent
 
 @TypewriterCommand
@@ -39,7 +40,7 @@ fun CommandTree.roadNetworkCommand() = literal("roadNetwork") {
             executePlayerOrTarget { target ->
                 val networkManager = KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java)
                 target.sendActionBar("Loading network...".asMini())
-                Dispatchers.UntickedAsync.launch {
+                KotlinDispatchers.UntickedAsync.launch {
                     val network = networkManager.getNetwork(entry().ref())
                     target.sendMessage(
                         """

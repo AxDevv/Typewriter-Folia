@@ -8,7 +8,8 @@ import com.typewritermc.roadnetwork.RoadNetwork
 import com.typewritermc.roadnetwork.RoadNetworkEditorState
 import com.typewritermc.roadnetwork.RoadNetworkEntry
 import com.typewritermc.roadnetwork.RoadNetworkManager
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -28,7 +29,7 @@ class RoadNetworkEditorComponent(
     }
 
     fun updateAsync(block: suspend (RoadNetwork) -> RoadNetwork) {
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             update(block)
         }
     }

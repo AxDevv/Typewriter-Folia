@@ -13,7 +13,8 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.delay
 import java.time.Duration
 
@@ -37,7 +38,7 @@ class DelayedActionEntry(
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
         disableAutomaticTriggering()
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             delay(duration.get(player, context).toMillis())
             triggerManually()
         }

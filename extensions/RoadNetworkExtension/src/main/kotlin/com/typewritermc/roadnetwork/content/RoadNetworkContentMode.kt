@@ -21,7 +21,8 @@ import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.roadnetwork.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
@@ -138,7 +139,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         return RoadNode(RoadNodeId(id), centerLocation, 1.0)
     }
 
-    private fun addRoadNode(position: Position) = Dispatchers.UntickedAsync.launch {
+    private fun addRoadNode(position: Position) = KotlinDispatchers.UntickedAsync.launch {
         val node = createNode(position)
         editorComponent.update { it.copy(nodes = it.nodes + node) }
         ContentModeTrigger(
@@ -147,7 +148,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ).triggerFor(player, context())
     }
 
-    private fun addNegativeNode(position: Position) = Dispatchers.UntickedAsync.launch {
+    private fun addNegativeNode(position: Position) = KotlinDispatchers.UntickedAsync.launch {
         val node = createNode(position)
         editorComponent.update { it.copy(negativeNodes = it.negativeNodes + node) }
         ContentModeTrigger(

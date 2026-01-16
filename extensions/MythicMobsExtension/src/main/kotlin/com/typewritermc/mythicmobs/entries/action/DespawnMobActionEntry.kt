@@ -13,9 +13,9 @@ import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import io.lumine.mythic.bukkit.MythicBukkit
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 
 
 @Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, "fluent:crown-subtract-24-filled")
@@ -39,7 +39,7 @@ class DespawnMobActionEntry(
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player, context).parsePlaceholders(player))
         if (!mob.isPresent) return
 
-        Dispatchers.Sync.launch {
+        Sync.launch {
             MythicBukkit.inst().mobManager.activeMobs.removeIf {
                 if (it.type == mob.get()) {
                     it.entity.remove()

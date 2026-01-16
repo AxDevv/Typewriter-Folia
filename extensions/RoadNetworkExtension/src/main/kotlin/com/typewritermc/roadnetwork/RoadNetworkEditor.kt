@@ -6,7 +6,8 @@ import com.typewritermc.core.utils.launch
 import com.typewritermc.roadnetwork.gps.roadNetworkFindPath
 import com.typewritermc.roadnetwork.pathfinding.PFInstanceSpace
 import com.typewritermc.roadnetwork.pathfinding.instanceSpace
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class RoadNetworkEditor(
         }
 
     fun load() {
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             mutex.withLock {
                 network = networkManager.getNetwork(ref)
                 lastChange = Long.MAX_VALUE
@@ -62,7 +63,7 @@ class RoadNetworkEditor(
     fun recalculateEdges() {
         jobRecalculateEdges?.cancel()
 
-        jobRecalculateEdges = Dispatchers.UntickedAsync.launch {
+        jobRecalculateEdges = KotlinDispatchers.UntickedAsync.launch {
             update {
                 it.copy(edges = emptyList())
             }
@@ -114,7 +115,7 @@ class RoadNetworkEditor(
         if (lastChange < 0) return
         if (lastChange + 3_000 > System.currentTimeMillis()) return
         if (job != null) return
-        job = Dispatchers.UntickedAsync.launch {
+        job = KotlinDispatchers.UntickedAsync.launch {
             val network = mutex.withLock {
                 lastChange = Long.MAX_VALUE
                 network = network.copy(

@@ -26,7 +26,8 @@ import com.typewritermc.roadnetwork.gps.toVector
 import com.typewritermc.roadnetwork.pathfinding.PFCapabilities
 import com.typewritermc.roadnetwork.pathfinding.instanceSpace
 import com.typewritermc.roadnetwork.roadNetworkMaxDistance
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.Job
 import org.bukkit.util.BoundingBox
 import org.koin.java.KoinJavaComponent.get
@@ -106,7 +107,7 @@ sealed interface NavigationActivityTaskState {
         private val location: PositionProperty,
     ) : NavigationActivityTaskState {
         var path: List<GPSEdge>? = null
-        private val job: Job = Dispatchers.UntickedAsync.launch {
+        private val job: Job = KotlinDispatchers.UntickedAsync.launch {
             val result = gps.findPath()
             path = if (result.isFailure) {
                 logger.severe("Failed to find path: ${result.exceptionOrNull()}")

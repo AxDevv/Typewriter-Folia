@@ -10,8 +10,8 @@ import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.engine.paper.utils.Sync
-import kotlinx.coroutines.Dispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.bukkit.entity.Player
 
 interface CinematicCommandEntry : CinematicEntry {
@@ -102,7 +102,7 @@ class CommandAction(
     override suspend fun startSegment(segment: CommandSegment) {
         super.startSegment(segment)
         if (segment.command.isBlank()) return
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             val attachment = if (segment.sudo) {
                 player.addAttachment(plugin)
             } else null

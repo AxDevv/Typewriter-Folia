@@ -12,9 +12,9 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.engine.paper.utils.item.Item
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import lirand.api.extensions.inventory.get
 import lirand.api.extensions.inventory.set
 import org.bukkit.inventory.ItemStack
@@ -50,7 +50,7 @@ class RemoveItemFromSlotActionEntry(
     val item: Optional<Var<Item>> = Optional.empty(),
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
-        Dispatchers.Sync.launch {
+        Sync.launch {
             val slot = slot.get(player, context)
             if (item.isPresent) {
                 val item = item.get().get(player, context)

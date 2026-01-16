@@ -24,7 +24,8 @@ import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.roadnetwork.*
 import com.typewritermc.roadnetwork.gps.roadNetworkFindPath
 import com.typewritermc.roadnetwork.pathfinding.instanceSpace
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.server.registerEvents
 import net.kyori.adventure.bossbar.BossBar
@@ -281,7 +282,7 @@ private class SelectedNodePathsComponent(
         get() = paths != null
 
     override suspend fun initialize(player: Player) {
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             paths = loadEdgePaths()
         }
     }

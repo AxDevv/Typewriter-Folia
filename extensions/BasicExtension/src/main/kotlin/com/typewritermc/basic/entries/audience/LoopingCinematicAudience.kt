@@ -11,7 +11,8 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.utils.toTicks
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import org.bukkit.entity.Player
 import java.time.Duration
 import java.time.Instant
@@ -114,7 +115,7 @@ private class CinematicDisplay(
         get() = actions.all { it canFinish frame }
 
     fun setup() {
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             actions.forEach { it.setup() }
             startTime = Instant.now()
         }
@@ -123,14 +124,14 @@ private class CinematicDisplay(
     fun tick() {
         if (startTime == null) return
         val frame = frame
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             actions.forEach { it.tick(frame) }
         }
     }
 
     fun teardown() {
         startTime = null
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             actions.forEach { it.teardown() }
         }
     }

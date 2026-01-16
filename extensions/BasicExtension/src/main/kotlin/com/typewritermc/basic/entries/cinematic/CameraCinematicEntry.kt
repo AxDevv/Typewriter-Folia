@@ -25,7 +25,8 @@ import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.*
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.future.await
 import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
@@ -211,7 +212,7 @@ class CameraCinematicAction(
             context[PlayerPositionOverride] = position
         }
 
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             allowFlight = true
             isFlying = true
             addPotionEffect(PotionEffect(INVISIBILITY, INFINITE_DURATION, 0, false, false))
@@ -278,7 +279,7 @@ class CameraCinematicAction(
         listener?.unregister()
         listener = null
 
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             interceptor?.cancel()
             interceptor = null
 
@@ -448,7 +449,7 @@ private class TeleportCameraAction(
 
     override suspend fun tickSegment(frame: Int) {
         val position = path.interpolate(frame)
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             player.teleport(position.toBukkitLocation())
             player.allowFlight = true
             player.isFlying = true

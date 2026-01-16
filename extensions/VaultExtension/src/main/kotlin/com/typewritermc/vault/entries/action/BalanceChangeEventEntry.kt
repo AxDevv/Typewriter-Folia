@@ -16,7 +16,8 @@ import com.typewritermc.engine.paper.entry.triggerAllFor
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.server
 import com.typewritermc.vault.VaultInitializer
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.unregister
@@ -82,7 +83,7 @@ class BalanceLoop : Initializable, Listener, KoinComponent {
         }
         plugin.registerEvents(this)
 
-        job = Dispatchers.UntickedAsync.launch {
+        job = KotlinDispatchers.UntickedAsync.launch {
             while (plugin.isEnabled) {
                 delay(100)
                 val economy = vaultInitializer.economy ?: continue

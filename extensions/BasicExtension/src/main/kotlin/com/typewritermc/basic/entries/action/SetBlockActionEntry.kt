@@ -14,9 +14,9 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.engine.paper.utils.toBukkitLocation
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.bukkit.Material
 
 @Entry("set_block", "Set a block at a location", Colors.RED, "fluent:cube-add-20-filled")
@@ -43,7 +43,7 @@ class SetBlockActionEntry(
     val location: Var<Position> = ConstVar(Position.ORIGIN),
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
-        Dispatchers.Sync.launch {
+        Sync.launch {
             val bukkitLocation = location.get(player, context).toBukkitLocation()
             bukkitLocation.block.type = material.get(player, context)
         }

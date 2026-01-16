@@ -21,7 +21,8 @@ import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.utils.Color
 import com.typewritermc.engine.paper.utils.toPacketLocation
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.delay
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.Metadata
@@ -76,7 +77,7 @@ class FireworkActionEntry(
             entity.despawn()
             return
         }
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             delay(flightDuration.toMillis())
             WrapperPlayServerEntityStatus(entityId, FIREWORK_EXPLOSION_STATUS) sendPacketTo player
             entity.despawn()

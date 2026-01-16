@@ -24,7 +24,8 @@ import com.typewritermc.engine.paper.facts.FactListenerSubscription
 import com.typewritermc.engine.paper.facts.listenForFacts
 import com.typewritermc.engine.paper.interaction.interactionContext
 import com.typewritermc.engine.paper.utils.server
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -87,7 +88,7 @@ class FactEventWatcher : Initializable, Listener {
     override suspend fun initialize() {
         facts = Query.find<FactChangeEventEntry>().map { it.fact }.distinct().toList()
         if (facts.isEmpty()) return
-        Dispatchers.UntickedAsync.launch {
+        KotlinDispatchers.UntickedAsync.launch {
             delay(1.seconds)
             server.onlinePlayers.forEach { it.watch() }
         }
