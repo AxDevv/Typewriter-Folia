@@ -1,6 +1,11 @@
 name: Manual Build Jars
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - main
 
 jobs:
   build-engine:
