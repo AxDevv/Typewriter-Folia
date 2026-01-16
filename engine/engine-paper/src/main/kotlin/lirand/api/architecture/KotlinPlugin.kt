@@ -3,7 +3,6 @@ package lirand.api.architecture
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.typewritermc.engine.paper.utils.FoliaSupported
 import lirand.api.LirandAPI
-import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -17,28 +16,30 @@ abstract class KotlinPlugin : SuspendingJavaPlugin() {
 		}
 	}
 
-	final override fun onEnableSuspended() {
+	final override fun onEnable() {
 		try {
 			LirandAPI.register(this)
 		} catch (_: IllegalStateException) {}
 
 		if (FoliaSupported.isFolia) {
 			pluginScope.launch {
+				@Suppress("LeakingThis")
 				onEnableAsync()
 			}
 		} else {
-			onEnableAsync()
+			super.onEnable()
 		}
 	}
 
-	final override fun onDisableSuspended() {
+	final override fun onDisable() {
 		if (FoliaSupported.isFolia) {
 			pluginScope.launch {
+				@Suppress("LeakingThis")
 				onDisableAsync()
 			}
 			pluginScope.cancel()
 		} else {
-			onDisableAsync()
+			super.onDisable()
 		}
 	}
 
@@ -49,7 +50,10 @@ abstract class KotlinPlugin : SuspendingJavaPlugin() {
 	private fun kotlinx.coroutines.CoroutineScope.launch(
 		block: suspend kotlinx.coroutines.CoroutineScope.() -> Unit
 	): kotlinx.coroutines.Job {
-		return kotlinx.coroutines.launch(block = block)
+		return kotlinx.coroutines.launch(
+			kotlinx.coroutines.CoroutineScope(coroutineContext),
+			block = block
+		)
 	}
 
 	private class FoliaPluginScope : kotlinx.coroutines.CoroutineScope, KoinComponent {

@@ -2,6 +2,7 @@ package com.typewritermc.engine.paper.content.modes
 
 import com.typewritermc.core.entries.Entry
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.utils.Dispatchers
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.core.utils.launch
@@ -14,7 +15,6 @@ import com.typewritermc.engine.paper.entry.fieldValue
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import java.lang.reflect.Type

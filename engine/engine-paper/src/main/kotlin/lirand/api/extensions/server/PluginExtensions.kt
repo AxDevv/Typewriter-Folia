@@ -39,6 +39,6 @@ fun PluginManager.registerSuspendingEvents(
 	if (FoliaSupported.isFolia) {
 		registerEvents(listener, plugin)
 	} else {
-		com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents(listener, plugin)
+		registerSuspendingEvents(listener, plugin)
 	}
 }
