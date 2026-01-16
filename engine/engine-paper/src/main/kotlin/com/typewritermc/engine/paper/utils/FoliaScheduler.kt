@@ -4,7 +4,7 @@ import io.papermc.paper.threadedregions.scheduler.AsyncScheduler
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers as KotlinDispatchers
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -55,3 +55,7 @@ private object FoliaSyncDispatcher : CoroutineDispatcher(), KoinComponent {
         scheduler.run { block.run() }
     }
 }
+
+// Extension properties for backward compatibility
+val Dispatchers.Sync: CoroutineDispatcher get() = FoliaSyncDispatcher
+val Dispatchers.TickedAsync: CoroutineDispatcher get() = FoliaAsyncDispatcher
