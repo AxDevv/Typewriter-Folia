@@ -156,22 +156,24 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
         // This is a hack to get the minecraft dispatcher.
         // As we need to dynamically add and remove commands on the fly
+        var commandsLoaded = false
         this.lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) {
             val manager = get<TypewriterCommandManager>()
             manager.registerDispatcher(it.registrar().dispatcher)
             if (it.cause() == ReloadableRegistrarEvent.Cause.RELOAD) {
                 manager.registerCommands()
             }
-        }
-        // We want to initialize all the extensions after all the plugins have been enabled to make sure
-        // that all the plugins are loaded.
-        Sync.launch {
-            delay(100)
-            load()
-            get<CommunicationHandler>().initialize()
+            if (!commandsLoaded) {
+                commandsLoaded = true
+                Sync.launch {
+                    delay(100)
+                    load()
+                    get<CommunicationHandler>().initialize()
 
-            delay(5.seconds)
-            Modrinth.initialize()
+                    delay(5.seconds)
+                    Modrinth.initialize()
+                }
+            }
         }
     }
 
