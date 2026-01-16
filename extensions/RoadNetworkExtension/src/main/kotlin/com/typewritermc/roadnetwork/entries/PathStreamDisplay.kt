@@ -313,7 +313,7 @@ abstract class PathStreamProducer(
 
     private fun launchOnPlayerScheduler(block: suspend () -> Unit): CancellableTask? {
         return if (FoliaSupported.isFolia) {
-            val task = player.scheduler.run(plugin) { _ ->
+            val task = player.scheduler.run(plugin) { _: ScheduledTask ->
                 runBlocking { block() }
             }
             task?.let { FoliaTask(it) }

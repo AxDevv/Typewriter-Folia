@@ -9,7 +9,9 @@
       "Bash(git -C \"C:\\\\Users\\\\twitc\\\\IdeaProjects\\\\Typewriter-FOLIA\" commit -m \"fix: Use player scheduler on Folia for world operations in PathStreamDisplay\")",
       "Bash(git -C \"C:\\\\Users\\\\twitc\\\\IdeaProjects\\\\Typewriter-FOLIA\" push)",
       "Bash(git -C:*)",
-      "Bash(git -C \"C:\\\\Users\\\\twitc\\\\IdeaProjects\\\\Typewriter-FOLIA\" commit -m \"fix: Use simple CancellableTask interface instead of Job\")"
+      "Bash(git -C \"C:\\\\Users\\\\twitc\\\\IdeaProjects\\\\Typewriter-FOLIA\" commit -m \"fix: Use simple CancellableTask interface instead of Job\")",
+      "Bash(..\\\\gradlew.bat shadowJar --no-daemon)",
+      "Bash(ls:*)"
     ]
   }
 }
