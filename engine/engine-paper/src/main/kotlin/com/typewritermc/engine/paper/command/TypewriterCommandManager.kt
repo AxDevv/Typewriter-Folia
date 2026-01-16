@@ -9,7 +9,10 @@ import com.typewritermc.engine.paper.command.dsl.DslCommand
 import com.typewritermc.engine.paper.entry.entries.CustomCommandEntry
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.server
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import io.papermc.paper.command.brigadier.CommandSourceStack
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 
@@ -29,7 +32,11 @@ class TypewriterCommandManager {
     fun registerCommands() {
         val dispatcher = this.dispatcher
         if (dispatcher == null) {
-            throw IllegalStateException("TypewriterCommandManager has not been initialized with a dispatcher")
+            Sync.launch {
+                delay(50)
+                registerCommands()
+            }
+            return
         }
 
         val commands = listOf(
