@@ -160,7 +160,7 @@ paperPluginYaml {
     main = "com.typewritermc.engine.paper.TypewriterPaperPlugin"
     apiVersion = "1.21.3"
 
-    foliaSupported = false
+    foliaSupported = true
 
     dependencies {
         server("packetevents", load = PaperPluginYaml.Load.BEFORE, required = true, joinClasspath = true)
