@@ -9,5 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 private object PaperTickedAsyncDispatcher : TypewriterDispatcher(plugin.asyncDispatcher)
 private object PaperSyncDispatcher : TypewriterDispatcher(plugin.minecraftDispatcher)
 
-val PaperDispatchers.Sync: CoroutineDispatcher get() = PaperSyncDispatcher
-val PaperDispatchers.TickedAsync: CoroutineDispatcher get() = PaperTickedAsyncDispatcher
+object PaperDispatchers {
+    val Sync: CoroutineDispatcher get() = PaperSyncDispatcher
+    val TickedAsync: CoroutineDispatcher get() = PaperTickedAsyncDispatcher
+}
