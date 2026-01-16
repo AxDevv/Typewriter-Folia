@@ -37,37 +37,38 @@ abstract class KotlinPlugin : SuspendingJavaPlugin() {
 				@Suppress("LeakingThis")
 				onDisableAsync()
 			}
-			pluginScope.cancel()
+			pluginScope.cleanup()
 		} else {
 			super.onDisable()
 		}
 	}
 
-	protected open suspend fun onEnableAsync() {}
-
-	protected open suspend fun onDisableAsync() {}
-
 	private fun kotlinx.coroutines.CoroutineScope.launch(
 		block: suspend kotlinx.coroutines.CoroutineScope.() -> Unit
 	): kotlinx.coroutines.Job {
+		val scope = this
 		return kotlinx.coroutines.launch(
-			kotlinx.coroutines.CoroutineScope(coroutineContext),
+			scope.coroutineContext,
 			block = block
 		)
 	}
 
+	private fun kotlinx.coroutines.CoroutineScope.cleanup() {
+		(this as? FoliaPluginScope)?.cleanup()
+	}
+
 	private class FoliaPluginScope : kotlinx.coroutines.CoroutineScope, KoinComponent {
-		private val job = kotlinx.coroutines.Job()
+		private val job = kotlinx.coroutines.SupervisorJob()
 		private val isEnabled by inject<Boolean>(named("isEnabled"))
 
 		override val coroutineContext: kotlin.coroutines.CoroutineContext
 			get() = if (isEnabled) {
-				com.typewritermc.engine.paper.utils.Dispatchers.TickedAsync + job
+				com.typewritermc.engine.paper.utils.Dispatchers.Sync + job
 			} else {
 				job
 			}
 
-		fun cancel() {
+		fun cleanup() {
 			job.cancel()
 		}
 	}

@@ -4,11 +4,10 @@ import io.papermc.paper.threadedregions.scheduler.AsyncScheduler
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler
 import kotlinx.coroutines.CoroutineDispatcher
-import org.bukkit.plugin.Plugin
+import kotlinx.coroutines.Dispatchers as KotlinDispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 object FoliaSupported {
@@ -28,14 +27,19 @@ object FoliaSupported {
         }
 }
 
-class FoliaAsyncDispatcher(
-    private val scheduler: AsyncScheduler
-) : CoroutineDispatcher(), KoinComponent {
+val Dispatchers: FoliaDispatchers
+    get() = FoliaDispatchers
+
+object FoliaDispatchers {
+    val Sync: CoroutineDispatcher get() = FoliaSyncDispatcher
+    val TickedAsync: CoroutineDispatcher get() = FoliaAsyncDispatcher
+}
+
+private object FoliaAsyncDispatcher : CoroutineDispatcher(), KoinComponent {
+    private val scheduler: AsyncScheduler by lazy { server.asyncScheduler }
     private val isEnabled by inject<Boolean>(named("isEnabled"))
 
-    override fun isDispatchNeeded(context: CoroutineContext): Boolean {
-        return isEnabled
-    }
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean = isEnabled
 
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         if (!isEnabled) return
@@ -43,27 +47,14 @@ class FoliaAsyncDispatcher(
     }
 }
 
-class FoliaGlobalRegionDispatcher(
-    private val scheduler: GlobalRegionScheduler
-) : CoroutineDispatcher(), KoinComponent {
+private object FoliaSyncDispatcher : CoroutineDispatcher(), KoinComponent {
+    private val scheduler: GlobalRegionScheduler by lazy { server.globalRegionScheduler }
     private val isEnabled by inject<Boolean>(named("isEnabled"))
 
-    override fun isDispatchNeeded(context: CoroutineContext): Boolean {
-        return isEnabled
-    }
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean = isEnabled
 
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         if (!isEnabled) return
         scheduler.run { block.run() }
-    }
-
-    fun schedule(delay: Long, unit: TimeUnit, block: Runnable): ScheduledTask {
-        if (!isEnabled) throw IllegalStateException("Plugin is not enabled")
-        return scheduler.runDelayed({ _ -> block.run() }, delay, unit)
-    }
-
-    fun scheduleAtFixedRate(delay: Long, period: Long, unit: TimeUnit, block: Runnable): ScheduledTask {
-        if (!isEnabled) throw IllegalStateException("Plugin is not enabled")
-        return scheduler.runAtFixedRate({ _ -> block.run() }, delay, period, unit)
     }
 }

@@ -2,10 +2,8 @@ package com.typewritermc.engine.paper.content.modes
 
 import com.typewritermc.core.entries.Entry
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.core.utils.Dispatchers
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
-import com.typewritermc.core.utils.launch
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
 import com.typewritermc.engine.paper.content.entryId
@@ -15,6 +13,9 @@ import com.typewritermc.engine.paper.entry.fieldValue
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import java.lang.reflect.Type
@@ -24,6 +25,8 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
     ContentMode(context, player) {
     abstract val type: Type
 
+    private var job: Job? = null
+
     override suspend fun setup(): Result<Unit> {
         val entryId = context.entryId
             ?: return failure("No entryId found for ${this::class.simpleName}. This is a bug. Please report it.")
@@ -31,7 +34,7 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
         val fieldPath = context.fieldPath
             ?: return failure("No fieldPath found for ${this::class.simpleName}. This is a bug. Please report it.")
 
-        Dispatchers.UntickedAsync.launch {
+        job = CoroutineScope(Dispatchers.Default).launch {
             delay(200.milliseconds)
             try {
                 val value = value()
@@ -47,6 +50,10 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
         return ok(Unit)
     }
 
-    abstract fun value(): T
+    override fun cleanup() {
+        job?.cancel()
+        job = null
+    }
 
+    abstract fun value(): T
 }
