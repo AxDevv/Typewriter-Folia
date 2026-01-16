@@ -234,7 +234,7 @@ abstract class PathStreamProducer(
     protected val gps = PointToPointGPS(roadNetwork, { startPosition(player) }, { endPosition(player) })
 
     protected var lastRefresh = 0L
-    protected var job: Job? = null
+    protected var job: CancellableTask? = null
 
     protected val mutex = Mutex()
     protected val streams = mutableListOf<PathStream>()
@@ -290,22 +290,35 @@ abstract class PathStreamProducer(
         }
     }
 
-    private fun launchOnPlayerScheduler(block: suspend () -> Unit): Job? {
+    private fun launchOnPlayerScheduler(block: suspend () -> Unit): CancellableTask? {
         return if (FoliaSupported.isFolia) {
-            val task = player.scheduler.run(plugin) { _ ->
+            val task = player.scheduler.run(plugin) {
                 runBlocking { block() }
             }
-            FoliaJobHandle(task)
+            task?.let { FoliaTask(it) }
         } else {
-            Sync.launch { block() }
+            CoroutineTask(Sync.launch { block() })
         }
     }
 
-    private class FoliaJobHandle(private val task: ScheduledTask) : Job {
+    private interface CancellableTask {
+        val isActive: Boolean
+        fun cancel()
+    }
+
+    private class FoliaTask(private val task: ScheduledTask) : CancellableTask {
         override val isActive: Boolean
             get() = !task.isCancelled
         override fun cancel() {
             task.cancel()
+        }
+    }
+
+    private class CoroutineTask(private val job: kotlinx.coroutines.Job) : CancellableTask {
+        override val isActive: Boolean
+            get() = job.isActive
+        override fun cancel() {
+            job.cancel()
         }
     }
 
