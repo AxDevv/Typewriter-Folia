@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.utils.server
 import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -32,7 +33,7 @@ class TypewriterCommandManager {
     fun registerCommands() {
         val dispatcher = this.dispatcher
         if (dispatcher == null) {
-            Sync.launch {
+            CoroutineScope(Sync).launch {
                 delay(50)
                 registerCommands()
             }
