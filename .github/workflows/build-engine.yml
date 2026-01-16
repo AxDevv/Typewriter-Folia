@@ -22,9 +22,6 @@ jobs:
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
           cache-cleanup: always
-          build-scan-publish: ${{ github.event_name != 'pull_request' }}
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
 
       - name: Build Engine
         uses: ./.github/actions/build-engine
