@@ -46,6 +46,27 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
 
+interface CancellableTask {
+    val isActive: Boolean
+    fun cancel()
+}
+
+class FoliaTask(private val task: ScheduledTask) : CancellableTask {
+    override val isActive: Boolean
+        get() = !task.isCancelled
+    override fun cancel() {
+        task.cancel()
+    }
+}
+
+class CoroutineTask(private val job: kotlinx.coroutines.Job) : CancellableTask {
+    override val isActive: Boolean
+        get() = job.isActive
+    override fun cancel() {
+        job.cancel()
+    }
+}
+
 class SinglePathStreamDisplay(
     private val roadNetwork: Ref<RoadNetworkEntry>,
     private val display: (Player) -> Ref<PathStreamDisplayEntry>,
@@ -292,33 +313,12 @@ abstract class PathStreamProducer(
 
     private fun launchOnPlayerScheduler(block: suspend () -> Unit): CancellableTask? {
         return if (FoliaSupported.isFolia) {
-            val task = player.scheduler.run(plugin) {
+            val task = player.scheduler.run(plugin) { _ ->
                 runBlocking { block() }
             }
             task?.let { FoliaTask(it) }
         } else {
             CoroutineTask(Sync.launch { block() })
-        }
-    }
-
-    private interface CancellableTask {
-        val isActive: Boolean
-        fun cancel()
-    }
-
-    private class FoliaTask(private val task: ScheduledTask) : CancellableTask {
-        override val isActive: Boolean
-            get() = !task.isCancelled
-        override fun cancel() {
-            task.cancel()
-        }
-    }
-
-    private class CoroutineTask(private val job: kotlinx.coroutines.Job) : CancellableTask {
-        override val isActive: Boolean
-            get() = job.isActive
-        override fun cancel() {
-            job.cancel()
         }
     }
 
