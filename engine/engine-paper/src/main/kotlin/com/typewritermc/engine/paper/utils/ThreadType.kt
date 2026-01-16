@@ -8,9 +8,8 @@ enum class ThreadType {
     @Deprecated(
         "Obsolete approach for kotlin coroutines",
         ReplaceWith(
-            "Dispatchers.Sync",
-            "kotlinx.coroutines.Dispatchers",
-            "com.typewritermc.engine.paper.utils.Sync"
+            "GameDispatchers.Sync",
+            "com.typewritermc.engine.paper.utils.GameDispatchers"
         ),
         level = DeprecationLevel.ERROR
     )
@@ -19,9 +18,8 @@ enum class ThreadType {
     @Deprecated(
         "Obsolete approach for kotlin coroutines",
         ReplaceWith(
-            "Dispatchers.TickedAsync",
-            "kotlinx.coroutines.Dispatchers",
-            "com.typewritermc.paper.utils.TickedAsync"
+            "GameDispatchers.TickedAsync",
+            "com.typewritermc.engine.paper.utils.GameDispatchers"
         ),
         level = DeprecationLevel.ERROR
     )

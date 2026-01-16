@@ -13,7 +13,7 @@ import com.typewritermc.engine.paper.events.ContentEditorStartEvent
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync
 import com.typewritermc.engine.paper.utils.msg
 import com.typewritermc.engine.paper.utils.playSound
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +50,7 @@ class ContentInteraction(
 
     override suspend fun initialize(): Result<Unit> {
         player.playSound("block.beacon.activate")
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             ContentEditorStartEvent(player).callEvent()
         }
         val mode = mode ?: return failure("No content mode found")
@@ -76,7 +76,7 @@ class ContentInteraction(
         val currentSlots = items.keys
         val newSlots = currentSlots - previousSlots
         val removedSlots = previousSlots - currentSlots
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             newSlots.forEach { slot ->
                 val originalItem = player.inventory.getItem(slot) ?: ItemStack.empty()
                 cachedOriginalItems.putIfAbsent(slot, originalItem)
@@ -131,7 +131,7 @@ class ContentInteraction(
 
     override suspend fun teardown() {
         unregister()
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             cachedOriginalItems.forEach { (slot, item) ->
                 player.inventory.setItem(slot, item)
             }

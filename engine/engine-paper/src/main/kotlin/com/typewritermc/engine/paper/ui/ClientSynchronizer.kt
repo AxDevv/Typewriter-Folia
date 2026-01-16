@@ -15,7 +15,7 @@ import com.typewritermc.engine.paper.content.ContentModeTrigger
 import com.typewritermc.engine.paper.entry.StagingManager
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync
 import com.typewritermc.engine.paper.utils.server
 import com.typewritermc.loader.ExtensionLoader
 import kotlinx.coroutines.Dispatchers
@@ -130,7 +130,7 @@ class ClientSynchronizer : KoinComponent {
     }
 
     fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
-        Dispatchers.Sync.launch {
+        Sync.launch {
             val result = stagingManager.publish()
             ack.sendResult(result)
         }

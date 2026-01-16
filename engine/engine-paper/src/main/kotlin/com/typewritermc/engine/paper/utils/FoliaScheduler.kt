@@ -27,10 +27,7 @@ object FoliaSupported {
         }
 }
 
-val Dispatchers: FoliaDispatchers
-    get() = FoliaDispatchers
-
-object FoliaDispatchers {
+object GameDispatchers {
     val Sync: CoroutineDispatcher get() = FoliaSyncDispatcher
     val TickedAsync: CoroutineDispatcher get() = FoliaAsyncDispatcher
 }

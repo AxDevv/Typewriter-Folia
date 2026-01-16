@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.bukkit.entity.Player
 import java.lang.reflect.Type
 import kotlin.time.Duration.Companion.milliseconds
@@ -50,7 +51,7 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
         return ok(Unit)
     }
 
-    override fun cleanup() {
+    fun cleanup() {
         job?.cancel()
         job = null
     }

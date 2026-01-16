@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.utils.launch
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.engine.paper.utils.TickedAsync
+import com.typewritermc.engine.paper.utils.GameDispatchers.TickedAsync
 import com.typewritermc.engine.paper.utils.asMini
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,7 +30,7 @@ object Modrinth {
     suspend fun initialize() {
         plugin.listen<PlayerJoinEvent>(listener) {
             if (!canSendNotification(it.player)) return@listen
-            Dispatchers.TickedAsync.launch {
+            TickedAsync.launch {
                 delay(5.seconds)
                 notifyPlayer(it.player)
             }

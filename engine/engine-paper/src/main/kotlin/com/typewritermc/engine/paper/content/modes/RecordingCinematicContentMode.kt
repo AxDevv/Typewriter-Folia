@@ -17,7 +17,7 @@ import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync
 import com.typewritermc.engine.paper.utils.loreString
 import com.typewritermc.engine.paper.utils.name
 import com.typewritermc.engine.paper.utils.toTicks
@@ -251,7 +251,7 @@ abstract class RecordingCinematicContentMode<F : Frame<F>>(
 
     private suspend fun applyStartingState() {
         val value = recorder[frame] ?: return
-        Dispatchers.Sync.switchContext {
+        Sync.switchContext {
             applyState(value)
         }
     }

@@ -2,17 +2,22 @@ package lirand.api.architecture
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.typewritermc.engine.paper.utils.FoliaSupported
+import com.typewritermc.engine.paper.utils.GameDispatchers
 import lirand.api.LirandAPI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import kotlin.coroutines.CoroutineContext
 
 abstract class KotlinPlugin : SuspendingJavaPlugin() {
-	private val pluginScope: kotlinx.coroutines.CoroutineScope by lazy {
+	private val pluginScope: CoroutineScope by lazy {
 		if (FoliaSupported.isFolia) {
 			FoliaPluginScope()
 		} else {
-			PaperPluginScope(this)
+			PaperPluginScope()
 		}
 	}
 
@@ -43,38 +48,38 @@ abstract class KotlinPlugin : SuspendingJavaPlugin() {
 		}
 	}
 
-	private fun kotlinx.coroutines.CoroutineScope.launch(
-		block: suspend kotlinx.coroutines.CoroutineScope.() -> Unit
-	): kotlinx.coroutines.Job {
-		val scope = this
-		return kotlinx.coroutines.launch(
-			scope.coroutineContext,
-			block = block
-		)
+	private fun CoroutineScope.cleanup() {
+		(this as? PluginScope)?.cleanup()
 	}
 
-	private fun kotlinx.coroutines.CoroutineScope.cleanup() {
-		(this as? FoliaPluginScope)?.cleanup()
+	private interface PluginScope {
+		fun cleanup()
 	}
 
-	private class FoliaPluginScope : kotlinx.coroutines.CoroutineScope, KoinComponent {
-		private val job = kotlinx.coroutines.SupervisorJob()
+	private class FoliaPluginScope : CoroutineScope, PluginScope, KoinComponent {
+		private val job = SupervisorJob()
 		private val isEnabled by inject<Boolean>(named("isEnabled"))
 
-		override val coroutineContext: kotlin.coroutines.CoroutineContext
+		override val coroutineContext: CoroutineContext
 			get() = if (isEnabled) {
-				com.typewritermc.engine.paper.utils.Dispatchers.Sync + job
+				GameDispatchers.Sync + job
 			} else {
 				job
 			}
 
-		fun cleanup() {
+		override fun cleanup() {
 			job.cancel()
 		}
 	}
 
-	private class PaperPluginScope(private val plugin: SuspendingJavaPlugin) : kotlinx.coroutines.CoroutineScope {
-		override val coroutineContext: kotlin.coroutines.CoroutineContext
-			get() = plugin.coroutineContext
+	private class PaperPluginScope : CoroutineScope, PluginScope {
+		private val job = SupervisorJob()
+
+		override val coroutineContext: CoroutineContext
+			get() = GameDispatchers.Sync + job
+
+		override fun cleanup() {
+			job.cancel()
+		}
 	}
 }

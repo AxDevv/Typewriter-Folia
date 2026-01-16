@@ -34,7 +34,7 @@ import com.typewritermc.engine.paper.ui.ClientSynchronizer
 import com.typewritermc.engine.paper.ui.CommunicationHandler
 import com.typewritermc.engine.paper.ui.PanelHost
 import com.typewritermc.engine.paper.ui.Writers
-import com.typewritermc.engine.paper.utils.Sync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync
 import com.typewritermc.engine.paper.utils.createBukkitDataParser
 import com.typewritermc.loader.DependencyChecker
 import io.papermc.paper.plugin.lifecycle.event.registrar.ReloadableRegistrarEvent
@@ -165,7 +165,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         }
         // We want to initialize all the extensions after all the plugins have been enabled to make sure
         // that all the plugins are loaded.
-        Dispatchers.Sync.launch {
+        Sync.launch {
             delay(100)
             load()
             get<CommunicationHandler>().initialize()
