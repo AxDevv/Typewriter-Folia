@@ -29,7 +29,7 @@ class RoadNetworkEditorComponent(
     }
 
     fun updateAsync(block: suspend (RoadNetwork) -> RoadNetwork) {
-        KotlinDispatchers.UntickedAsync.launch {
+        Sync.launch {
             update(block)
         }
     }

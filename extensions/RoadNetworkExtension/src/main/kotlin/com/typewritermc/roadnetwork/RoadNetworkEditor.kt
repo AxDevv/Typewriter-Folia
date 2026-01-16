@@ -45,7 +45,7 @@ class RoadNetworkEditor(
         }
 
     fun load() {
-        KotlinDispatchers.UntickedAsync.launch {
+        Sync.launch {
             mutex.withLock {
                 network = networkManager.getNetwork(ref)
                 lastChange = Long.MAX_VALUE
@@ -63,7 +63,7 @@ class RoadNetworkEditor(
     fun recalculateEdges() {
         jobRecalculateEdges?.cancel()
 
-        jobRecalculateEdges = KotlinDispatchers.UntickedAsync.launch {
+        jobRecalculateEdges = Sync.launch {
             update {
                 it.copy(edges = emptyList())
             }
@@ -115,7 +115,7 @@ class RoadNetworkEditor(
         if (lastChange < 0) return
         if (lastChange + 3_000 > System.currentTimeMillis()) return
         if (job != null) return
-        job = KotlinDispatchers.UntickedAsync.launch {
+        job = Sync.launch {
             val network = mutex.withLock {
                 lastChange = Long.MAX_VALUE
                 network = network.copy(

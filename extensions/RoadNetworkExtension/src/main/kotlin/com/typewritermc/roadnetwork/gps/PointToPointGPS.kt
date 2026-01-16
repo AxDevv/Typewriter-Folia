@@ -29,7 +29,7 @@ class PointToPointGPS(
     private var previousEnd: Pair<RoadNode, List<RoadEdge>?>? = null
     private var previousPath: List<RoadEdge> = emptyList()
 
-    override suspend fun findPath(): Result<List<GPSEdge>> = KotlinDispatchers.UntickedAsync.switchContext {
+    override suspend fun findPath(): Result<List<GPSEdge>> = Sync.switchContext {
         var network = roadNetworkManager.getNetwork(roadNetwork)
 
         val start = startFetcher(network)

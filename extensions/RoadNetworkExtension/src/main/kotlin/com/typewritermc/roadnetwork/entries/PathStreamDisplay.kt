@@ -9,7 +9,7 @@ import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.core.utils.UntickedAsync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.core.utils.launch
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.distanceSqrt
@@ -243,7 +243,7 @@ abstract class PathStreamProducer(
             job = null
         }
         if (job == null && (System.currentTimeMillis() - lastRefresh) > refreshDuration.toMillis()) {
-            job = Dispatchers.UntickedAsync.launch {
+            job = Sync.launch {
                 withTimeout(30.seconds) {
                     val stream = refreshPath() ?: return@withTimeout
                     mutex.withLock { streams.add(stream) }
@@ -251,7 +251,7 @@ abstract class PathStreamProducer(
             }
         }
 
-        Dispatchers.Unconfined.launch {
+        Sync.launch {
             mutex.lock()
             try {
                 var writeIndex = 0

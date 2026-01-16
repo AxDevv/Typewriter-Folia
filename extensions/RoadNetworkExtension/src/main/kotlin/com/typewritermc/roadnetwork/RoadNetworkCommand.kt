@@ -40,7 +40,7 @@ fun CommandTree.roadNetworkCommand() = literal("roadNetwork") {
             executePlayerOrTarget { target ->
                 val networkManager = KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java)
                 target.sendActionBar("Loading network...".asMini())
-                KotlinDispatchers.UntickedAsync.launch {
+                Sync.launch {
                     val network = networkManager.getNetwork(entry().ref())
                     target.sendMessage(
                         """

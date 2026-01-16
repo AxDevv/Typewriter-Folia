@@ -282,7 +282,7 @@ private class SelectedNodePathsComponent(
         get() = paths != null
 
     override suspend fun initialize(player: Player) {
-        KotlinDispatchers.UntickedAsync.launch {
+        Sync.launch {
             paths = loadEdgePaths()
         }
     }

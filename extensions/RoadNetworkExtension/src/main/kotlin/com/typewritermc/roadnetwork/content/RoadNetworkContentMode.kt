@@ -139,7 +139,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         return RoadNode(RoadNodeId(id), centerLocation, 1.0)
     }
 
-    private fun addRoadNode(position: Position) = KotlinDispatchers.UntickedAsync.launch {
+    private fun addRoadNode(position: Position) = Sync.launch {
         val node = createNode(position)
         editorComponent.update { it.copy(nodes = it.nodes + node) }
         ContentModeTrigger(
@@ -148,7 +148,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ).triggerFor(player, context())
     }
 
-    private fun addNegativeNode(position: Position) = KotlinDispatchers.UntickedAsync.launch {
+    private fun addNegativeNode(position: Position) = Sync.launch {
         val node = createNode(position)
         editorComponent.update { it.copy(negativeNodes = it.negativeNodes + node) }
         ContentModeTrigger(

@@ -7,7 +7,7 @@ import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.Initializable
 import com.typewritermc.core.extension.annotations.Singleton
-import com.typewritermc.core.utils.UntickedAsync
+import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.core.utils.launch
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
@@ -29,14 +29,14 @@ class RoadNetworkManager : Initializable, KoinComponent {
     private val editors = CacheBuilder.newBuilder()
         .expireAfterAccess(2, TimeUnit.MINUTES)
         .removalListener<Ref<out RoadNetworkEntry>, RoadNetworkEditor> { notification ->
-            Dispatchers.UntickedAsync.launch {
+            Sync.launch {
                 notification.value?.dispose()
             }
         }
         .build(CacheLoader.from(::createEditor))
 
     override suspend fun initialize() {
-        job = Dispatchers.UntickedAsync.launch {
+        job = Sync.launch {
             while (plugin.isEnabled) {
                 delay(500)
                 editors.asMap().values.forEach { it.refresh() }
@@ -46,7 +46,7 @@ class RoadNetworkManager : Initializable, KoinComponent {
 
     private fun loadRoadNetwork(id: String): CompletableDeferred<RoadNetwork> {
         val deferred = CompletableDeferred<RoadNetwork>()
-        Dispatchers.UntickedAsync.launch {
+        Sync.launch {
             val network = try {
                 Query.findById<RoadNetworkEntry>(id)?.loadRoadNetwork(gson)
             } catch (e: Exception) {

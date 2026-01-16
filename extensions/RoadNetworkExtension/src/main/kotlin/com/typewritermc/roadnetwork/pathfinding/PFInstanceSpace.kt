@@ -95,7 +95,7 @@ class InstanceSpaceCache : Initializable, Listener {
     }
 
     override suspend fun initialize() {
-        job = KotlinDispatchers.UntickedAsync.launch {
+        job = Sync.launch {
             while (true) {
                 delay(5000)
                 cache.values.retainAll { it.refresh() }
