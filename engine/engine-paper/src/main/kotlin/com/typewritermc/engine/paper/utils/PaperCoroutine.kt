@@ -13,23 +13,6 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import kotlin.coroutines.CoroutineContext
 
-object FoliaSupported {
-    private var _isFolia: Boolean? = null
-
-    val isFolia: Boolean
-        get() {
-            if (_isFolia == null) {
-                _isFolia = try {
-                    Class.forName("io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler")
-                    true
-                } catch (e: ClassNotFoundException) {
-                    false
-                }
-            }
-            return _isFolia == true
-        }
-}
-
 private object PaperTickedAsyncDispatcher : TypewriterDispatcher(plugin.asyncDispatcher)
 private object PaperSyncDispatcher : TypewriterDispatcher(plugin.minecraftDispatcher)
 

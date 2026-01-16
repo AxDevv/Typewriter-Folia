@@ -15,7 +15,9 @@
       "Bash(find:*)",
       "Bash(unzip:*)",
       "Bash(jar:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(findstr:*)",
+      "Bash(.gradlew.bat:*)"
     ]
   }
 }
