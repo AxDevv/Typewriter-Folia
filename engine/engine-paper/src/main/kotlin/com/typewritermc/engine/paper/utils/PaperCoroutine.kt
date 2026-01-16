@@ -40,6 +40,23 @@ private object FoliaSyncDispatcher : CoroutineDispatcher(), KoinComponent {
     }
 }
 
+object FoliaSupported {
+    private var _isFolia: Boolean? = null
+
+    val isFolia: Boolean
+        get() {
+            if (_isFolia == null) {
+                _isFolia = try {
+                    Class.forName("io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler")
+                    true
+                } catch (e: ClassNotFoundException) {
+                    false
+                }
+            }
+            return _isFolia == true
+        }
+}
+
 val Dispatchers.Sync: CoroutineDispatcher
     get() = if (FoliaSupported.isFolia) FoliaSyncDispatcher else PaperSyncDispatcher
 

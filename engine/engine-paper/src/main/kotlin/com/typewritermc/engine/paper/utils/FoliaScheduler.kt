@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.plugin
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -56,10 +57,13 @@ object FoliaSupported {
         }
 }
 
-object GameDispatchers {
-    val Sync: CoroutineDispatcher
-        get() = if (FoliaSupported.isFolia) FoliaSyncDispatcher else PaperSyncDispatcher
+val Dispatchers.Sync: CoroutineDispatcher
+    get() = if (FoliaSupported.isFolia) FoliaSyncDispatcher else PaperSyncDispatcher
 
-    val TickedAsync: CoroutineDispatcher
-        get() = if (FoliaSupported.isFolia) FoliaAsyncDispatcher else PaperTickedAsyncDispatcher
+val Dispatchers.TickedAsync: CoroutineDispatcher
+    get() = if (FoliaSupported.isFolia) FoliaAsyncDispatcher else PaperTickedAsyncDispatcher
+
+object GameDispatchers {
+    val Sync: CoroutineDispatcher get() = Dispatchers.Sync
+    val TickedAsync: CoroutineDispatcher get() = Dispatchers.TickedAsync
 }
