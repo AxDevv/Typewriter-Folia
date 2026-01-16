@@ -11,6 +11,10 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.utils.GameDispatchers.Sync as Sync
 import com.typewritermc.core.utils.launch
+import com.typewritermc.engine.paper.utils.FoliaSupported
+import com.typewritermc.engine.paper.plugin
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import kotlinx.coroutines.runBlocking
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.distanceSqrt
 import com.typewritermc.engine.paper.entry.descendants
@@ -243,7 +247,7 @@ abstract class PathStreamProducer(
             job = null
         }
         if (job == null && (System.currentTimeMillis() - lastRefresh) > refreshDuration.toMillis()) {
-            job = Sync.launch {
+            job = launchOnPlayerScheduler {
                 withTimeout(30.seconds) {
                     val stream = refreshPath() ?: return@withTimeout
                     mutex.withLock { streams.add(stream) }
@@ -251,7 +255,7 @@ abstract class PathStreamProducer(
             }
         }
 
-        Sync.launch {
+        launchOnPlayerScheduler {
             mutex.lock()
             try {
                 var writeIndex = 0
@@ -283,6 +287,25 @@ abstract class PathStreamProducer(
             } finally {
                 mutex.unlock()
             }
+        }
+    }
+
+    private fun launchOnPlayerScheduler(block: suspend () -> Unit): Job? {
+        return if (FoliaSupported.isFolia) {
+            val task = player.scheduler.run(plugin) { _ ->
+                runBlocking { block() }
+            }
+            FoliaJobHandle(task)
+        } else {
+            Sync.launch { block() }
+        }
+    }
+
+    private class FoliaJobHandle(private val task: ScheduledTask) : Job {
+        override val isActive: Boolean
+            get() = !task.isCancelled
+        override fun cancel() {
+            task.cancel()
         }
     }
 
