@@ -313,12 +313,6 @@ private class ExtensionValidator(
     }
 
     fun validate(extension: Extension.LoadedExtension): FailureReason? {
-        if (extension.info.engineVersion != expectedVersion) {
-            return FailureReason.VersionMismatch(
-                expected = expectedVersion,
-                found = extension.info.engineVersion
-            )
-        }
 
         if (extension.info.paper == null) {
             return FailureReason.NotPaperExtension
